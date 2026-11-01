@@ -1,36 +1,64 @@
-# ShulkerPacks
-open shulker boxes without placing them down
+# kokonut_conveniences 26.3
 
-![Image of Title](https://i.imgur.com/m1Y8zsr.png)
+셜커 상자와 제작대를 설치하지 않고 사용할 수 있는 Paper/Purpur 편의기능 플러그인입니다.
+26.3은 플러그인 버전입니다. Paper/Purpur 서버와 Java 21 이상이 필요합니다. 플러그인의 최소 API 버전은 1.21.7이며, 메뉴 API는 Paper 기준으로 빌드합니다.
 
-### Description:
-Tired of having to put down your shulker to open it? Or maybe youre in claimed land? Now you can right click the shulker in your inventory to open it, or just right click the air with it in your main hand!
+## 사용 방법
 
-This also works in chests (GUIs can be blacklisted with their inventory name in the config)
+- 주 손에 셜커 상자를 들고 허공을 우클릭하여 엽니다.
+- 인벤토리, 상자, 엔더 상자, 통 안의 셜커 상자도 우클릭하여 엽니다.
+- 내장 설정의 `shiftclicktoopen`을 켜면 웅크리기 키를 누르고 우클릭해야 합니다.
 
-### Permissions:
-shulkerpacks.use (lets the player use shulker packs)
+## 휴대용 작업대
 
-### Config:
-```
-blacklistedinventories: ["&4&lMineXChange", "test inventory"]
+제작대, 엔더 상자, 돌 절단기, 베틀, 숫돌, 모루 아이템을 주 손에 들고 허공을 우클릭하거나,
+자신의 인벤토리에서 우클릭하면 해당 기능을 사용할 수 있습니다. 커서는 비어 있어야 합니다.
+모든 플레이어가 사용할 수 있으며 enum에서 각 기능을 켜거나 끌 수 있습니다.
+엔더 상자는 자신의 실제 엔더 상자 보관함을 엽니다.
+각 작업대는 실제 바닐라 메뉴를 사용하여 제작법, 재료와 경험치 소모를 유지합니다.
 
-canopeninair: true            #false will prevent users from opening shulkerboxes by clicking the air
-canopenininventory: true      #false will prevent users from opening shulkerboxes in their inventory
-canopeninchests: true         #false will prevent users from opening shulkerboxes in chests
-canopeninenderchest: true     #false will prevent users from opening shulkerboxes in enderchests
-canopeninbarrels: true        #false will prevent users from opening shulkerboxes in barrels
-canplaceshulker: true         #false will prevent users from placing shulkerboxes by accident
+모루는 한 개로 나눈 상태에서 사용해야 합니다. 성공한 작업마다 12% 확률로 한 단계 손상되며,
+일반 → 약간 손상 → 심하게 손상 → 파손 순서로 사용한 모루 아이템에 반영됩니다.
+창만 열거나 실패한 작업에는 손상을 적용하지 않습니다. 크리에이티브에서는 손상되지 않습니다.
+사용 중인 모루 슬롯은 이동할 수 없으며 파손되면 창을 닫고 남은 재료를 반환합니다.
+다른 휴대용 작업대 아이템은 소모되지 않습니다.
 
-defaultname: "&9Shulker Pack"
-shiftclicktoopen: false
-shulkervolume: 1              #0.1 is quiet, 1 is loud
-#shift click to open applies to both ingame and in inventory
+시스템 접두사는 `[에고버스]`이며 굵은 글씨를 사용하지 않습니다.
 
-```
-__The fastest and easiest way to contact me:__
-Discord: https://discord.gg/AET9mWj
+## 명령어
 
-![Image of Boost](https://i.imgur.com/8OAtOy5.png)
+`/편의기능 새로고침`: 내장 설정의 적용 방법을 안내합니다. 운영자(OP)와 콘솔에서 사용할 수 있습니다.
+기존 `/shulkerpacks reload`도 호환용으로 사용할 수 있습니다.
+사용법, 권한 부족, 전투 제한, 관리자 경고, 활성화·비활성화 메시지는 한국어로 표시됩니다.
 
-Can conflict with auto-sorting inventory plugins
+## 권한
+
+| 권한 | 설명 | 기본값 |
+| --- | --- | --- |
+| `shulkerpacks.use` | 기본 사용 권한 | 운영자 |
+| `shulkerpacks.open_in_air` | 허공에서 열기 | 허용 |
+| `shulkerpacks.open_in_inventory` | 인벤토리에서 열기 | 허용 |
+| `shulkerpacks.open_in_chests` | 상자에서 열기 | 허용 |
+
+각 열기 권한은 기본 사용 권한과 설정이 함께 허용해야 적용됩니다.
+가상 인벤토리에서 열려면 `shulkerpacks.open_in_virtual_inventory` 권한이 필요합니다.
+관리자 경고 수신 권한은 `shulkerpacks.admin`입니다.
+
+## 설정
+
+설정은 `src/main/java/me/darkolythe/shulkerpacks/PluginSettings.java`의 `PluginSettings.INSTANCE` enum에 내장되어 있습니다.
+기존 `config.yml`의 모든 값을 옮겼으며, 설정 필드는 `final`, 차단 목록은 수정 불가능한 목록입니다.
+외부 `config.yml`은 생성하거나 읽지 않습니다. 기존 서버에 남아 있는 파일도 적용되지 않습니다.
+값을 변경하려면 enum의 설정값을 수정하고 다시 빌드한 JAR로 교체한 뒤 서버를 재시작하세요.
+`/편의기능 새로고침`과 기존 영문 명령어는 호환용으로 유지하며 적용 방법을 안내합니다.
+
+아이템에 직접 지정한 이름은 그대로 표시됩니다.
+인벤토리 자동 정렬 플러그인과 충돌할 수 있습니다.
+
+## 빌드
+
+JDK 21 이상과 Maven으로 `mvn clean package`를 실행하세요.
+결과 파일: `target/kokonut_conveniences-26.3.jar`
+실제 서버 버전에 따른 동작은 서버에서 확인해야 합니다.
+
+원작자 문의: [Discord](https://discord.gg/AET9mWj)

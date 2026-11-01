@@ -53,8 +53,8 @@ public class ShulkerListener implements Listener {
         if(ShulkerPacks.openshulkers.containsKey(event.getPlayer()) &&
                 ShulkerPacks.openshulkers.get(event.getPlayer()).getType() == Material.AIR) {
             event.setCancelled(true);
-            Bukkit.broadcast(event.getPlayer().getName() + " tried to drop a shulker that is now air, they might be trying to dupe.","shulkerpacks.admin");
-            Bukkit.getLogger().warning(event.getPlayer().getName() + " tried to drop a shulker that is now air, they might be trying to dupe.");
+            Bukkit.broadcast(main.prefix + event.getPlayer().getName() + " 님이 비어 있는 아이템으로 바뀐 셜커 상자를 버리려고 했습니다. 복제 시도가 의심됩니다.","shulkerpacks.admin");
+            Bukkit.getLogger().warning(main.prefix + event.getPlayer().getName() + " 님이 비어 있는 아이템으로 바뀐 셜커 상자를 버리려고 했습니다. 복제 시도가 의심됩니다.");
             return;
         }
 
@@ -136,7 +136,7 @@ public class ShulkerListener implements Listener {
 
             // prevent the player from opening it in a chest if they have no permission
             if (event.getClickedInventory() != null && (event.getClickedInventory().getType() == InventoryType.CHEST)) {
-                if (!main.canopeninchests || (main.canopeninchests && !player.hasPermission("shulkerpacks.open_in_chests"))) {
+                if (!main.settings.canopeninchests || (main.settings.canopeninchests && !player.hasPermission("shulkerpacks.open_in_chests"))) {
                     return;
                 }
             }
@@ -156,7 +156,7 @@ public class ShulkerListener implements Listener {
 
             // prevent the player from opening it in the inventory if they have no permission
             if ((player.getInventory() == event.getClickedInventory())) {
-                if (!main.canopenininventory || !player.hasPermission("shulkerpacks.open_in_inventory")) {
+                if (!main.settings.canopenininventory || !player.hasPermission("shulkerpacks.open_in_inventory")) {
                     return;
                 }
             }
@@ -164,7 +164,7 @@ public class ShulkerListener implements Listener {
 
             // prevent the player from opening it in virtual inventories if they have no permission
             if ((event.getClickedInventory().getHolder() == null && event.getClickedInventory().getLocation() == null)) {
-                if (!main.canopeninvirtualinventory || !player.hasPermission("shulkerpacks.open_in_virtual_inventory")) {
+                if (!main.settings.canopeninvirtualinventory || !player.hasPermission("shulkerpacks.open_in_virtual_inventory")) {
                     return;
                 }
             }
@@ -182,21 +182,21 @@ public class ShulkerListener implements Listener {
 
             if(event.getClickedInventory() != null && event.getClickedInventory().getHolder() != null &&
                     event.getClickedInventory().getHolder().getClass().toString().endsWith(".CraftBarrel") &&
-                    !main.canopeninbarrels) {
+                    !main.settings.canopeninbarrels) {
                 return;
             }
 
-            if (!main.canopeninenderchest && type == InventoryType.ENDER_CHEST) {
+            if (!main.settings.canopeninenderchest && type == InventoryType.ENDER_CHEST) {
                 return;
             }
 
-            for (String str: main.blacklist) {
+            for (String str: main.settings.blacklist) {
                 if (ChatColor.stripColor(player.getOpenInventory().getTitle()).contains(ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', str)))) {
                     return;
                 }
             }
 
-            if (!main.shiftclicktoopen || event.isShiftClick()) {
+            if (!main.settings.shiftclicktoopen || event.isShiftClick()) {
                 boolean isCancelled = event.isCancelled();
                 event.setCancelled(true);
                 if (event.isRightClick() && openInventoryIfShulker(event.getCurrentItem(), player)) {
@@ -227,8 +227,8 @@ public class ShulkerListener implements Listener {
         if (event.getPlayer() instanceof Player) {
             Player player = (Player) event.getPlayer();
             if (saveShulker(player, player.getOpenInventory().getTitle())) {
-                player.getWorld().playSound(player.getLocation(), Sound.BLOCK_SHULKER_BOX_CLOSE, SoundCategory.PLAYERS, main.volume, 1);
-                if (main.openpreviousinv) {
+                player.getWorld().playSound(player.getLocation(), Sound.BLOCK_SHULKER_BOX_CLOSE, SoundCategory.PLAYERS, main.settings.volume, 1);
+                if (main.settings.openpreviousinv) {
                     openPreviousInventory(player);
                 }
             }
@@ -268,7 +268,7 @@ public class ShulkerListener implements Listener {
         if (action == Action.RIGHT_CLICK_AIR) {
             ItemStack item = event.getItem();
             if (item != null && item.getType().toString().contains("SHULKER_BOX")) {
-                if (main.canopeninair && player.hasPermission("shulkerpacks.open_in_air")) {
+                if (main.settings.canopeninair && player.hasPermission("shulkerpacks.open_in_air")) {
                     // Check if the shulker box is already open
                     if (checkIfOpen(item)) {
                         event.setCancelled(true);
@@ -289,7 +289,7 @@ public class ShulkerListener implements Listener {
     @EventHandler
     public void onShulkerPlace(BlockPlaceEvent event) {
         if (event.getBlockPlaced().getType().toString().contains("SHULKER_BOX")) {
-            if (!main.canplaceshulker) {
+            if (!main.settings.canplaceshulker) {
                 event.setCancelled(true);
             }
         }
@@ -317,7 +317,7 @@ public class ShulkerListener implements Listener {
     public boolean saveShulker(Player player, String title) {
         try {
             if (ShulkerPacks.openshulkers.containsKey(player)) {
-                if (title == null || title.equals(main.defaultname) || (ShulkerPacks.openshulkers.get(player).hasItemMeta() &&
+                if (title == null || title.equals(main.settings.defaultname) || (ShulkerPacks.openshulkers.get(player).hasItemMeta() &&
                         ShulkerPacks.openshulkers.get(player).getItemMeta().hasDisplayName() &&
                         (ShulkerPacks.openshulkers.get(player).getItemMeta().getDisplayName().equals(title)))) {
                     ItemStack item = ShulkerPacks.openshulkers.get(player);
@@ -361,9 +361,9 @@ public class ShulkerListener implements Listener {
             long lastOpenTime = shulkerOpenCooldown.get(player);
             long currentTime = System.currentTimeMillis();
 
-            if (currentTime - lastOpenTime < main.shulker_open_cooldown) {
-                Bukkit.getLogger().warning(player.getName() + " is opening shulker boxes very quickly! They might be hacking!");
-                Bukkit.broadcast(player.getName() + " is opening shulker boxes very quickly! They might be hacking!","shulkerpacks.admin");
+            if (currentTime - lastOpenTime < main.settings.shulker_open_cooldown) {
+                Bukkit.getLogger().warning(main.prefix + player.getName() + " 님이 셜커 상자를 너무 빠르게 열고 있습니다! 비정상적인 동작이 의심됩니다.");
+                Bukkit.broadcast(main.prefix + player.getName() + " 님이 셜커 상자를 너무 빠르게 열고 있습니다! 비정상적인 동작이 의심됩니다.","shulkerpacks.admin");
 
                 return false;
             }
@@ -376,7 +376,7 @@ public class ShulkerListener implements Listener {
                 if (item.getAmount() == 1 && item.getType().toString().contains("SHULKER")) {
 
                     if (main.getPvpTimer(player)) {
-                        player.sendMessage(main.prefix + ChatColor.RED + "You cannot open shulkerboxes in combat!");
+                        player.sendMessage(main.prefix + ChatColor.RED + "전투 중에는 셜커 상자를 열 수 없습니다!");
                         return false;
                     }
 
@@ -388,7 +388,7 @@ public class ShulkerListener implements Listener {
                             if (meta.hasDisplayName()) {
                                 inv = Bukkit.createInventory(new ShulkerHolder(), InventoryType.SHULKER_BOX, meta.getDisplayName());
                             } else {
-                                inv = Bukkit.createInventory(new ShulkerHolder(), InventoryType.SHULKER_BOX, main.defaultname);
+                                inv = Bukkit.createInventory(new ShulkerHolder(), InventoryType.SHULKER_BOX, main.settings.defaultname);
                             }
                             inv.setContents(shulker.getInventory().getContents());
 
@@ -401,7 +401,7 @@ public class ShulkerListener implements Listener {
                                 }
                             }, 1);*/
                             player.openInventory(inv);
-                            player.getWorld().playSound(player.getLocation(), Sound.BLOCK_SHULKER_BOX_OPEN, SoundCategory.PLAYERS, main.volume, 1);
+                            player.getWorld().playSound(player.getLocation(), Sound.BLOCK_SHULKER_BOX_OPEN, SoundCategory.PLAYERS, main.settings.volume, 1);
                             ShulkerPacks.openshulkers.put(player, item);
                             main.openinventories.put(player, player.getOpenInventory().getTopInventory());
                             return true;

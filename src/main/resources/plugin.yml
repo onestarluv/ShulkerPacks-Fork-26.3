@@ -1,25 +1,25 @@
-name: ShulkerPacks
-version: 1.8.0
+name: kokonut_conveniences
+version: '26.3'
 main: me.darkolythe.shulkerpacks.ShulkerPacks
-api-version: 1.16
+api-version: '1.21.7'
 authors: [Darkolythe,Kerm,avixk]
 
 commands:
-  shulkerpacks:
-    usage: /<command> reload
-    description: reloads the shulkerpacks config
-    permission: op
+  편의기능:
+    aliases: [kokonut_conveniences, 셜커가방, shulkerpacks]
+    usage: /<command> 새로고침
+    description: 편의기능 내장 설정의 적용 방법을 안내합니다.
 
 permissions:
   shulkerpacks.use:
-    description: gives player permission to open shulker boxes in their inventory
+    description: 인벤토리에서 셜커 상자를 열 수 있습니다.
     default: op
   shulkerpacks.open_in_air:
-    description: allows the player to open the shulkerbox in the air (if config enables it) if the player has "shulkerpacks.use"
+    description: 기본 사용 권한과 설정이 허용하면 허공에서 열 수 있습니다.
     default: true
   shulkerpacks.open_in_inventory:
-    description: allows the player to open the shulkerbox in their inventory (if config enables it) if the player has "shulkerpacks.use"
+    description: 기본 사용 권한과 설정이 허용하면 인벤토리에서 열 수 있습니다.
     default: true
   shulkerpacks.open_in_chests:
-    description: allows the player to open the shulkerbox in a chest (if config enables it) if the player has "shulkerpacks.use"
+    description: 기본 사용 권한과 설정이 허용하면 상자에서 열 수 있습니다.
     default: true

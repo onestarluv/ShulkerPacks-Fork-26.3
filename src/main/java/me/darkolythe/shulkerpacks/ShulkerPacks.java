@@ -15,23 +15,14 @@ public final class ShulkerPacks extends JavaPlugin {
 
     private static ShulkerPacks plugin;
 
-    String prefix = ChatColor.WHITE.toString() + ChatColor.BOLD.toString() + "[" + ChatColor.BLUE.toString() + "ShulkerPacks" + ChatColor.WHITE.toString() + ChatColor.BOLD.toString() + "] ";
+    final String prefix = ChatColor.WHITE + "[" + ChatColor.BLUE + "에고버스" + ChatColor.WHITE + "] ";
 
     static Map<Player, ItemStack> openshulkers = new HashMap<>();
     Map<Player, Boolean> fromhand = new HashMap<>();
     Map<Player, Inventory> openinventories = new HashMap<>();
     Map<Player, Inventory> opencontainer = new HashMap<>();
     private Map<Player, Long> pvp_timer = new HashMap<>();
-    boolean canopeninchests = true;
-    boolean openpreviousinv = false;
-    List<String> blacklist = new ArrayList<>();
-    String defaultname = ChatColor.BLUE + "Shulker Pack";
-    boolean pvp_timer_enabled = false;
-    boolean shiftclicktoopen = false;
-    boolean canopeninenderchest, canopeninbarrels, canplaceshulker, canopenininventory, canopeninvirtualinventory, canopeninair;
-
-    int shulker_open_cooldown;
-    float volume;
+    final PluginSettings settings = PluginSettings.INSTANCE;
 
     /*
     Sets up the plugin
@@ -42,16 +33,15 @@ public final class ShulkerPacks extends JavaPlugin {
         shulkerlistener = new ShulkerListener(this);
 
         getServer().getPluginManager().registerEvents(shulkerlistener, this);
+        getServer().getPluginManager().registerEvents(new PortableWorkstationListener(this), this);
 
-        getCommand("shulkerpacks").setExecutor(new CommandReload());
-
-        ConfigHandler.loadConfig(this);
+        getCommand("편의기능").setExecutor(new CommandReload());
 
         //Metrics metrics = new Metrics(this);
 
         shulkerlistener.checkIfValid();
 
-        getLogger().log(Level.INFO, (prefix + ChatColor.GREEN + "ShulkerPacks has been enabled!"));
+        getLogger().log(Level.INFO, (prefix + ChatColor.GREEN + "편의기능이 활성화되었습니다!"));
     }
 
     /*
@@ -63,7 +53,7 @@ public final class ShulkerPacks extends JavaPlugin {
         while (it.hasNext()) {
             it.next().closeInventory();
         }
-        getLogger().log(Level.INFO, (prefix + ChatColor.RED + "ShulkerPacks has been disabled!"));
+        getLogger().log(Level.INFO, (prefix + ChatColor.RED + "편의기능이 비활성화되었습니다!"));
     }
 
 
@@ -80,7 +70,7 @@ public final class ShulkerPacks extends JavaPlugin {
     }
 
     public void setPvpTimer(Player player) {
-        if (pvp_timer_enabled) {
+        if (settings.pvp_timer_enabled) {
             pvp_timer.put(player, System.currentTimeMillis());
         }
     }
