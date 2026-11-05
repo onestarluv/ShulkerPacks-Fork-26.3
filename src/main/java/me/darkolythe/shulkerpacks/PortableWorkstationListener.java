@@ -84,7 +84,7 @@ public final class PortableWorkstationListener implements Listener {
         PortableWorkstation type = workstation(source);
         if (type == null) return;
         if (type.isAnvil() && source.getAmount() != 1) {
-            player.sendMessage(plugin.prefix + "모루를 한 개로 나누어 사용해주세요.");
+            kr.gomsv.kokonutCore.api.util.MessageUtil.send(player, plugin.prefix + "모루를 한 개로 나누어 사용해주세요.");
             return;
         }
         if (type == PortableWorkstation.ENDER_CHEST) {
@@ -124,7 +124,7 @@ public final class PortableWorkstationListener implements Listener {
         if (next == Material.AIR) {
             player.getInventory().setItem(session.slot, null);
             player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_DESTROY, 1, 1);
-            player.sendMessage(plugin.prefix + "사용하던 모루가 파손되었습니다.");
+            kr.gomsv.kokonutCore.api.util.MessageUtil.send(player, plugin.prefix + "사용하던 모루가 파손되었습니다.");
             if (anvils.get(player.getUniqueId()) == session
                     && player.getOpenInventory().getTopInventory() == session.inventory) player.closeInventory();
         } else {
@@ -133,7 +133,7 @@ public final class PortableWorkstationListener implements Listener {
             player.getInventory().setItem(session.slot, damaged);
             session.source = damaged.clone();
             player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_USE, 1, 1);
-            player.sendMessage(plugin.prefix + "사용하던 모루가 한 단계 손상되었습니다.");
+            kr.gomsv.kokonutCore.api.util.MessageUtil.send(player, plugin.prefix + "사용하던 모루가 한 단계 손상되었습니다.");
         }
     }
 

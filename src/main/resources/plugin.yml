@@ -26,3 +26,5 @@ permissions:
 description: 에고버스 플러그인
 
 website: https://wiki.egoverse.kr
+
+depend: [Kokonut-Core]

@@ -376,7 +376,7 @@ public class ShulkerListener implements Listener {
                 if (item.getAmount() == 1 && item.getType().toString().contains("SHULKER")) {
 
                     if (main.getPvpTimer(player)) {
-                        player.sendMessage(main.prefix + ChatColor.RED + "전투 중에는 셜커 상자를 열 수 없습니다!");
+                        kr.gomsv.kokonutCore.api.util.MessageUtil.send(player, main.prefix + ChatColor.RED + "전투 중에는 셜커 상자를 열 수 없습니다!");
                         return false;
                     }
 
