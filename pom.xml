@@ -10,6 +10,8 @@
     <packaging>jar</packaging>
 
     <properties>
+        <!-- 테스트 서버 plugins 폴더 (-Ddeploy.dir=... 로 변경 가능) -->
+        <deploy.dir>D:/egoverse/home1/plugins</deploy.dir>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>21</maven.compiler.release>
     </properties>
@@ -26,7 +28,7 @@
     </repositories>
 
     <dependencies>
-        <dependency><groupId>kr.gomsv</groupId><artifactId>Kokonut-Core</artifactId><version>cbt-1.0</version><scope>system</scope><systemPath>${project.basedir}/../core/Kokonut-Core/build/libs/Kokonut-Core-cbt-1.0.jar</systemPath></dependency>
+        <dependency><groupId>kr.gomsv</groupId><artifactId>Kokonut-Core</artifactId><version>cbt-1.0</version><scope>system</scope><systemPath>${project.basedir}/../Kokonut_Core/build/libs/Kokonut-Core-cbt-1.0.jar</systemPath></dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
@@ -85,7 +87,21 @@
                         <phase>package</phase>
                         <goals><goal>copy-resources</goal></goals>
                         <configuration>
-                            <outputDirectory>${project.basedir}/../core/plugin</outputDirectory>
+                            <outputDirectory>${project.basedir}/../plugin</outputDirectory>
+                            <overwrite>true</overwrite>
+                            <resources><resource>
+                                <directory>${project.build.directory}</directory>
+                                <filtering>false</filtering>
+                                <includes><include>${project.build.finalName}.jar</include></includes>
+                            </resource></resources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>deploy-to-test-server</id>
+                        <phase>package</phase>
+                        <goals><goal>copy-resources</goal></goals>
+                        <configuration>
+                            <outputDirectory>${deploy.dir}</outputDirectory>
                             <overwrite>true</overwrite>
                             <resources><resource>
                                 <directory>${project.build.directory}</directory>
